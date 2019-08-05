@@ -34,3 +34,14 @@ it('line', async () => {
   await sender({ type: 'foo', text: 'hello' })
   expect(data).not.toBeNull()
 })
+
+it('demux', async () => {
+  const data: Array<string | null> = [null, null]
+  const writerA = (line: string) => (data[0] = line)
+  const writerB = (line: string) => (data[1] = line)
+
+  const sender = factory.demux([factory.line(writerA), factory.line(writerB)])
+  await sender({ type: 'foo', text: 'hello' })
+  expect(data[0]).not.toBeNull()
+  expect(data[1]).not.toBeNull()
+})

@@ -89,4 +89,11 @@ export class LogSenderFactory {
       // 실행만 되고 로그는 무시하도록 일단 구현
     }
   }
+
+  public demux(functions: LogFunction[]): LogFunction {
+    return async doc => {
+      const tasks = functions.map(fn => fn(doc))
+      await Promise.all(tasks)
+    }
+  }
 }
