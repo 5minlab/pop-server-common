@@ -3,6 +3,7 @@ import commonjs from 'rollup-plugin-commonjs'
 import sourceMaps from 'rollup-plugin-sourcemaps'
 import camelCase from 'lodash.camelcase'
 import typescript from 'rollup-plugin-typescript2'
+import builtins from 'rollup-plugin-node-builtins';
 import json from 'rollup-plugin-json'
 import copy from 'rollup-plugin-copy'
 
@@ -22,6 +23,8 @@ export default {
     include: 'src/**',
   },
   plugins: [
+    builtins(),
+
     // Allow json resolution
     json(),
     // Compile TypeScript files
