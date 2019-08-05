@@ -27,17 +27,12 @@ function stringifyLog(doc: object) {
 }
 
 async function sendToElasticsearch(elas: Client, index: string, body: object) {
-  try {
-    const result = await elas.create({
-      id: uuidv4(),
-      index,
-      type: '_doc',
-      body
-    })
-  } catch (err) {
-    // TODO 실패 로그 어디로 남기지
-    console.error(err)
-  }
+  const result = await elas.create({
+    id: uuidv4(),
+    index,
+    type: '_doc',
+    body
+  })
 }
 
 export function makeLogFileName(prefix: string, now: Date) {
