@@ -2,7 +2,7 @@ import uuidv4 from 'uuid/v4'
 import fs from 'fs-extra'
 import path from 'path'
 import dayjs from 'dayjs'
-import { Client } from 'elasticsearch'
+import { Client } from '@elastic/elasticsearch'
 
 const toTimestamp = (now: Date) => now.getTime()
 
