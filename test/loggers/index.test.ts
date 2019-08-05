@@ -2,6 +2,7 @@ import fse from 'fs-extra'
 import path from 'path'
 import faker from 'faker'
 import { LogSenderFactory } from '../../src/pop-server-common'
+import { makeLogFileName } from '../../src/loggers/index'
 
 const cat = faker.random.alphaNumeric(8)
 const logpath = path.resolve(__dirname, `log-${cat}`)
@@ -15,6 +16,13 @@ afterAll(async () => {
 })
 
 const factory = new LogSenderFactory(cat)
+
+describe('makeLogFileName', () => {
+  const prefix = 'game'
+  const now = new Date(1564996889163)
+  const actual = makeLogFileName(prefix, now)
+  expect(actual).toBe('game-2019-08-05.log')
+})
 
 it('file', async () => {
   const sender = factory.file(logpath)

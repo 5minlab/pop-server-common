@@ -40,10 +40,16 @@ async function sendToElasticsearch(elas: Client, index: string, body: object) {
   }
 }
 
+export function makeLogFileName(prefix: string, now: Date) {
+  const nowObj = dayjs(now)
+  const nowStr = nowObj.format('YYYY-MM-DD')
+  const name = `${prefix}-${nowStr}.log`
+  return name
+}
+
 async function sendToFile(logpath: string, prefix: string, body: object) {
-  const now = dayjs(new Date())
-  const name = now.format(`${prefix}-YYYY-MM-DD.log`)
-  const fp = path.resolve(logpath, name)
+  const filename = makeLogFileName(prefix, new Date())
+  const fp = path.join(logpath, filename)
   const log = convertLog(body)
   const line = stringifyLog(log)
   await fse.appendFile(fp, line + '\n')
