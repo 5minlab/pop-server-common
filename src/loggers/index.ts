@@ -19,7 +19,7 @@ export function convertLog(data: object) {
   }
 }
 
-type LogFunction = <T extends LogDocument>(doc: T) => Promise<void>
+export type LogFunction = <T extends LogDocument>(doc: T) => Promise<void>
 
 function stringifyLog(doc: object) {
   const line = JSON.stringify(doc)
