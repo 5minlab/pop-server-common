@@ -19,6 +19,7 @@ const globals = {
   'lodash': '_',
   'yup': 'yup',
   'http-errors': 'createErrors',
+  'crypto': 'crypto',
 }
 
 export default {
@@ -41,12 +42,13 @@ export default {
   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
   external: [
     ...external,
+    'crypto',
   ],
   watch: {
     include: 'src/**',
   },
   plugins: [
-    builtins(),
+    builtins({ crypto: false }),
 
     // Allow json resolution
     json(),
