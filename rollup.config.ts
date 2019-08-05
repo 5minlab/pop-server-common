@@ -16,6 +16,7 @@ const globals = {
   'fs-extra': 'fse',
   'dayjs': 'dayjs',
   'express-ipfilter': 'express-ipfilter',
+  'lodash': '_',
 }
 
 export default {
