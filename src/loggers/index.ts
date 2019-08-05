@@ -1,5 +1,5 @@
 import uuidv4 from 'uuid/v4'
-import fs from 'fs-extra'
+import fse from 'fs-extra'
 import path from 'path'
 import dayjs from 'dayjs'
 import { Client } from '@elastic/elasticsearch'
@@ -46,7 +46,7 @@ async function sendToFile(logpath: string, prefix: string, body: object) {
   const fp = path.resolve(logpath, name)
   const log = convertLog(body)
   const line = stringifyLog(log)
-  await fs.appendFile(fp, line + '\n')
+  await fse.appendFile(fp, line + '\n')
 }
 
 async function sendToWriter(writer: (line: string) => void, prefix: string, body: object) {

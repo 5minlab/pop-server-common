@@ -3,22 +3,42 @@ import commonjs from 'rollup-plugin-commonjs'
 import sourceMaps from 'rollup-plugin-sourcemaps'
 import camelCase from 'lodash.camelcase'
 import typescript from 'rollup-plugin-typescript2'
-import builtins from 'rollup-plugin-node-builtins';
+import builtins from 'rollup-plugin-node-builtins'
 import json from 'rollup-plugin-json'
 import copy from 'rollup-plugin-copy'
 
 const pkg = require('./package.json')
+const external = Object.keys(pkg.dependencies)
 
 const libraryName = 'pop-server-common'
+
+const globals = {
+  'fs-extra': 'fse',
+  'dayjs': 'dayjs',
+  'express-ipfilter': 'express-ipfilter',
+}
 
 export default {
   input: `src/${libraryName}.ts`,
   output: [
-    { file: pkg.main, name: camelCase(libraryName), format: 'umd', sourcemap: true },
-    { file: pkg.module, format: 'es', sourcemap: true },
+    {
+      file: pkg.main,
+      name: camelCase(libraryName),
+      format: 'umd',
+      sourcemap: true,
+      globals,
+    },
+    {
+      file: pkg.module,
+      format: 'es',
+      sourcemap: true,
+      globals,
+    },
   ],
   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
-  external: [],
+  external: [
+    ...external,
+  ],
   watch: {
     include: 'src/**',
   },

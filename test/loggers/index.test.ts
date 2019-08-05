@@ -1,4 +1,4 @@
-import fs from 'fs-extra'
+import fse from 'fs-extra'
 import path from 'path'
 import faker from 'faker'
 import { LogSenderFactory } from '../../src/pop-server-common'
@@ -7,11 +7,11 @@ const cat = faker.random.alphaNumeric(8)
 const logpath = path.resolve(__dirname, `log-${cat}`)
 
 beforeAll(async () => {
-  await fs.mkdir(logpath)
+  await fse.mkdir(logpath)
 })
 
 afterAll(async () => {
-  await fs.remove(logpath)
+  await fse.remove(logpath)
 })
 
 const factory = new LogSenderFactory(cat)
