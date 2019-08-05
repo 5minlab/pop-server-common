@@ -17,6 +17,8 @@ const globals = {
   'dayjs': 'dayjs',
   'express-ipfilter': 'express-ipfilter',
   'lodash': '_',
+  'yup': 'yup',
+  'http-errors': 'createErrors',
 }
 
 export default {

@@ -10,7 +10,7 @@ export interface LogDocument {
   type: string
 }
 
-export function convertLog(data: object) {
+function convertLog(data: object) {
   const now = new Date()
   return {
     now,
