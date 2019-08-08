@@ -20,6 +20,7 @@ const globals = {
   'yup': 'yup',
   'http-errors': 'createErrors',
   'crypto': 'crypto',
+  'jsonwebtoken': 'jwt',
 }
 
 export default {
