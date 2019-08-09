@@ -5,13 +5,14 @@ const mylogger = require('../dist/lib/loggers');
 
 const { format } = winston;
 const { combine, timestamp, label, printf } = format;
-const { TransportOptionFactory } = mylogger;
+const { TransportOptionFactory, winstonFormats } = mylogger;
 
 const factory = new TransportOptionFactory();
 
 const loggerJson = winston.createLogger({
   level: 'info',
   format: format.combine(
+    winstonFormats.enumerateErrorFormat(),
     format.timestamp(),
     format.json(),
   ),
@@ -34,8 +35,14 @@ const loggerJson = winston.createLogger({
 });
 
 
-const myFormat = printf(({ level, message, label, timestamp }) => {
-  return `${timestamp} [${label}] ${level}: ${message}`;
+const myFormat = printf(opts => {
+  const { level, message, label, timestamp } = opts;
+  const line = `${timestamp} [${label}] ${level}: ${message}`;
+  if (opts.stack) {
+    return line + '\n' + opts.stack
+  } else {
+    return line;
+  }
 });
 
 const loggerLine = winston.createLogger({
@@ -43,6 +50,7 @@ const loggerLine = winston.createLogger({
   format: combine(
     // format.colorize(),
     label({ label: 'line' }),
+    winstonFormats.enumerateErrorFormat(),
     timestamp(),
     myFormat
   ),
@@ -80,7 +88,8 @@ loggerLine.info('this is sample line');
 try {
   throw new Error('sample error');
 } catch (err) {
-  // TODO
+  loggerJson.warn(err);
+  loggerLine.warn(err);
 }
 
 throw new Error('sample uncatched error');

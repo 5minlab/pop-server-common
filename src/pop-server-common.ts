@@ -1,6 +1,6 @@
 export { companyIpFilter } from './middlewares'
 
-export { LogDocument, TransportOptionFactory } from './loggers'
+export { LogDocument, TransportOptionFactory, winstonFormats } from './loggers'
 
 export { getRequestContext, sanitizeRequestContext, methodNotAllowedHandler } from './express'
 
