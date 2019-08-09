@@ -1,10 +1,4 @@
-import winston from 'winston'
-
-import Elasticsearch, {
-  Transformer,
-  ElasticsearchTransportOptions,
-  LogData
-} from 'winston-elasticsearch'
+import { Transformer, ElasticsearchTransportOptions, LogData } from 'winston-elasticsearch'
 
 import { DailyRotateFileTransportOptions } from 'winston-daily-rotate-file'
 
@@ -83,21 +77,5 @@ export class TransportOptionFactory {
 
   public file(opts: FileTransportOptions) {
     return { ...defaultFileTransportOpts, ...opts }
-  }
-}
-
-export class TransportFactory {
-  private readonly factory = new TransportOptionFactory()
-
-  public es(opts: ElasticsearchTransportOptions) {
-    return new Elasticsearch(this.factory.es(opts))
-  }
-
-  public console(opts: ConsoleTransportOptions) {
-    return new winston.transports.Console(this.factory.console(opts))
-  }
-
-  public file(opts: FileTransportOptions) {
-    return new winston.transports.File(this.factory.file(opts))
   }
 }

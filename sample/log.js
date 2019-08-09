@@ -1,13 +1,13 @@
 const winston = require('winston');
 const winstonDaily = require('winston-daily-rotate-file');
+const winstonElasticsearch = require('winston-elasticsearch');
 const mylogger = require('../dist/lib/loggers');
 
 const { format } = winston;
 const { combine, timestamp, label, printf } = format;
-const { TransportOptionFactory, TransportFactory } = mylogger;
+const { TransportOptionFactory } = mylogger;
 
-const optionFactory = new TransportOptionFactory();
-const factory = new TransportFactory();
+const factory = new TransportOptionFactory();
 
 const loggerJson = winston.createLogger({
   level: 'info',
@@ -18,18 +18,18 @@ const loggerJson = winston.createLogger({
   // format: winston.format.json(),
   defaultMeta: { service: 'sample' },
   transports: [
-    new winstonDaily(optionFactory.daily({
+    new winstonDaily(factory.daily({
       filename: 'json-%DATE%.log',
     })),
-    factory.es({
+    new winstonElasticsearch(factory.es({
       indexPrefix: 'sample-json',
-    }),
+    })),
   ],
   exceptionHandlers: [
-    factory.file({
+    new winston.transports.File(factory.file({
       filename: 'exception-json.log',
       handleExceptions: true,
-    }),
+    })),
   ],
 });
 
@@ -48,27 +48,27 @@ const loggerLine = winston.createLogger({
   ),
   defaultMeta: { service: 'sample' },
   transports: [
-    new winstonDaily(optionFactory.daily({
+    new winstonDaily(factory.daily({
       filename: 'line-%DATE%.log',
     })),
-    factory.es({
+    new winstonElasticsearch(factory.es({
       indexPrefix: 'sample-line',
-    }),
+    })),
   ],
   exceptionHandlers: [
-    factory.file({
+    new winston.transports.File(factory.file({
       filename: 'exception-line.log',
       handleExceptions: true,
-    }),
+    })),
   ],
 })
 
 if (process.env.NODE_ENV !== 'production') {
-  const opts = {
+  const opts = factory.console({
     handleExceptions: true,
-  };
-  loggerJson.add(factory.console(opts));
-  loggerLine.add(factory.console(opts));
+  });
+  loggerJson.add(new winston.transports.Console(opts));
+  loggerLine.add(new winston.transports.Console(opts));
 }
 
 loggerJson.info('sample-json', {
@@ -77,4 +77,10 @@ loggerJson.info('sample-json', {
 });
 loggerLine.info('this is sample line');
 
-throw new Error('sample error');
+try {
+  throw new Error('sample error');
+} catch (err) {
+  // TODO
+}
+
+throw new Error('sample uncatched error');

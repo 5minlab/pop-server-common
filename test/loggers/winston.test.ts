@@ -2,7 +2,6 @@ import {
   extractFields,
   extractMessage,
   extractTimestamp,
-  TransportFactory,
   TransportOptionFactory,
   transformer
 } from '../../src/loggers/winston'
@@ -131,16 +130,5 @@ describe('TransportOptionFactory', () => {
     factory.es({})
     factory.daily({})
     factory.file({})
-  })
-})
-
-describe('TransportFactory', () => {
-  const factory = new TransportFactory()
-  it('ok', () => {
-    factory.console({})
-    factory.es({})
-    factory.file({
-      filename: 'sample.log'
-    })
   })
 })

@@ -18,8 +18,6 @@ const globals = {
   'yup': 'yup',
   'http-errors': 'createErrors',
   'jsonwebtoken': 'jwt',
-  'winston': 'winston',
-  'winston-elasticsearch': 'Elasticsearch',
 }
 
 export default {
