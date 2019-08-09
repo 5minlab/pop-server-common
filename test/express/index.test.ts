@@ -25,7 +25,17 @@ describe('getRequestConext', () => {
       query: { sval }
     }
     const actual = getRequestContext(req)
-    expect(actual).toMatchObject({ ival, bval, sval })
+    expect(actual).toEqual({ ival, bval, sval })
+  })
+
+  it('none', () => {
+    const req = {
+      body: {},
+      params: {},
+      query: {}
+    }
+    const actual = getRequestContext(req)
+    expect(actual).toEqual({})
   })
 })
 

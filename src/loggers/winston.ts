@@ -10,10 +10,10 @@ import { DailyRotateFileTransportOptions } from 'winston-daily-rotate-file'
 
 import { ConsoleTransportOptions, FileTransportOptions } from 'winston/lib/winston/transports'
 
-function extractMessage(data: LogData) {
+export function extractMessage(data: LogData) {
   if (typeof data.message === 'string') {
     return data.message
-  } else if (data.message === 'object') {
+  } else if (typeof data.message === 'object') {
     const keys = ['message', 'type', 'msg', 'ty']
     for (const key of keys) {
       if (typeof data.message[key] === 'string') {
@@ -22,11 +22,11 @@ function extractMessage(data: LogData) {
     }
     return 'empty'
   } else {
-    return data.message
+    return `${data.message}`
   }
 }
 
-function extractTimestamp(data: LogData) {
+export function extractTimestamp(data: LogData) {
   if (typeof data.timestamp === 'string') {
     return data.timestamp
   } else {
@@ -35,24 +35,18 @@ function extractTimestamp(data: LogData) {
   }
 }
 
-function extractFields(data: LogData) {
+export function extractFields(data: LogData) {
   const fields = typeof data.message === 'string' ? data.meta : { ...data.meta, ...data.message }
   delete fields['timestamp']
   return fields
 }
 
-const transformer: Transformer = logData => {
-  const timestamp = extractTimestamp(logData)
-  const message = extractMessage(logData)
-  const fields = extractFields(logData)
-
-  return {
-    '@timestamp': timestamp,
-    message: message,
-    severity: logData.level,
-    fields: fields
-  }
-}
+export const transformer: Transformer = logData => ({
+  severity: logData.level,
+  message: extractMessage(logData),
+  fields: extractFields(logData),
+  '@timestamp': extractTimestamp(logData)
+})
 
 const defaultElasticsearchTransportOpts: ElasticsearchTransportOptions = {
   transformer,

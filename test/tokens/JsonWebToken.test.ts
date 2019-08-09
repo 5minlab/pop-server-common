@@ -9,14 +9,24 @@ interface Token {
 }
 
 describe('JsonWebToken', () => {
-  it('sign -> verify', async () => {
-    const helper = new JsonWebToken(secret)
+  const helper = new JsonWebToken(secret)
+
+  it('sign -> verify/decode', async () => {
     const input: Token = {
       a: 123,
       b: 'foo'
     }
     const token = await helper.sign(input)
-    const actual = await helper.verify(token)
-    expect(actual).toMatchObject(input)
+    expect(await helper.verify(token)).toMatchObject(input)
+    expect(helper.decode(token)).toMatchObject(input)
+  })
+
+  it('verify fail', async () => {
+    await expect(helper.verify('invalid-token')).rejects.toThrowError()
+  })
+
+  it('decode fail', () => {
+    const actual = helper.decode('invalid-token')
+    expect(actual).toBeNull()
   })
 })

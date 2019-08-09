@@ -9,7 +9,7 @@ const secret = faker.random.alphaNumeric(8)
 
 describe('extractTokenString', () => {
   it('error', () => {
-    const cases = [`${token}`, `invalid ${token}`, 'Bearer', 'Bearer ', 'Bearer     ']
+    const cases = [``, `${token}`, `invalid ${token}`, 'Bearer', 'Bearer ', 'Bearer     ']
     for (const line of cases) {
       expect(() => extractTokenString({ line, prefix })).toThrowError(``)
     }

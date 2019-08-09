@@ -9,7 +9,7 @@ export class JsonWebToken {
     this.secret = secret
   }
 
-  public async verify(token: string) {
+  public async verify(token: string): Promise<object | string> {
     return new Promise<object | string>((resolve, reject) => {
       jwt.verify(token, this.secret, (err, decoded) => {
         if (err) {
@@ -21,7 +21,7 @@ export class JsonWebToken {
     })
   }
 
-  public async decode(token: string) {
+  public decode(token: string): object | string | null {
     return jwt.decode(token)
   }
 
