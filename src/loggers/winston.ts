@@ -35,11 +35,16 @@ function extractTimestamp(data: LogData) {
   }
 }
 
+function extractFields(data: LogData) {
+  const fields = typeof data.message === 'string' ? data.meta : { ...data.meta, ...data.message }
+  delete fields['timestamp']
+  return fields
+}
+
 const transformer: Transformer = logData => {
   const timestamp = extractTimestamp(logData)
   const message = extractMessage(logData)
-  const fields =
-    typeof logData.message === 'string' ? logData.meta : { ...logData.meta, ...logData.message }
+  const fields = extractFields(logData)
 
   return {
     '@timestamp': timestamp,
