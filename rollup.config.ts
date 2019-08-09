@@ -13,14 +13,14 @@ const external = Object.keys(pkg.dependencies)
 const libraryName = 'pop-server-common'
 
 const globals = {
-  'fs-extra': 'fse',
-  'dayjs': 'dayjs',
   'express-ipfilter': 'express-ipfilter',
   'lodash': '_',
   'yup': 'yup',
   'http-errors': 'createErrors',
   'crypto': 'crypto',
   'jsonwebtoken': 'jwt',
+  'winston': 'winston',
+  'winston-elasticsearch': 'Elasticsearch',
 }
 
 export default {
