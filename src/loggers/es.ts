@@ -4,13 +4,13 @@ export function extractMessage(data: LogData) {
   if (typeof data.message === 'string') {
     return data.message
   } else if (typeof data.message === 'object') {
-    const keys = ['message', 'type', 'msg', 'ty']
+    const keys = ['message']
     for (const key of keys) {
       if (typeof data.message[key] === 'string') {
         return data.message[key]
       }
     }
-    return 'empty'
+    return undefined
   } else {
     return `${data.message}`
   }
@@ -31,15 +31,25 @@ export function extractFields(data: LogData) {
   return fields
 }
 
-export const transformer: Transformer = logData => ({
+export const defaultTransformer: Transformer = logData => ({
   severity: logData.level,
   message: extractMessage(logData),
   fields: extractFields(logData),
   '@timestamp': extractTimestamp(logData)
 })
 
+export const rootTransformer: Transformer = logData => {
+  const fields = extractFields(logData)
+  return {
+    severity: logData.level,
+    message: extractMessage(logData),
+    '@timestamp': extractTimestamp(logData),
+    ...fields
+  }
+}
+
 export const defaultElasticsearchTransportOpts: ElasticsearchTransportOptions = {
-  transformer,
+  transformer: rootTransformer,
   clientOpts: {
     host: 'http://127.0.0.1:9200'
   }

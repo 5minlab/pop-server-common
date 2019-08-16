@@ -1,4 +1,10 @@
-import { extractFields, extractMessage, extractTimestamp, transformer } from '../../src/loggers/es'
+import {
+  extractFields,
+  extractMessage,
+  extractTimestamp,
+  defaultTransformer,
+  rootTransformer
+} from '../../src/loggers/es'
 
 import { LogData } from 'winston-elasticsearch'
 
@@ -20,7 +26,7 @@ describe('extractMessage', () => {
   it('object - found', () => {
     const data: LogData = {
       ...common,
-      message: { type: message }
+      message: { message }
     }
     expect(extractMessage(data)).toBe(message)
   })
@@ -30,7 +36,7 @@ describe('extractMessage', () => {
       ...common,
       message: { foo: 'bar' }
     }
-    expect(extractMessage(data)).toBe('empty')
+    expect(extractMessage(data)).toBeUndefined()
   })
 
   it('number', () => {
@@ -94,8 +100,8 @@ describe('extractFields', () => {
   })
 })
 
-describe('transform', () => {
-  it('ok', () => {
+describe('defaultTransformer', () => {
+  it('message - string', () => {
     const input: LogData = {
       timestamp: '2019-09-30T05:09:08.282Z',
       message: 'Some message',
@@ -114,6 +120,74 @@ describe('transform', () => {
         url: '/sitemap.xml'
       }
     }
-    expect(transformer(input)).toEqual(expected)
+    expect(defaultTransformer(input)).toEqual(expected)
+  })
+
+  it('message - object', () => {
+    const input: LogData = {
+      timestamp: '2019-09-30T05:09:08.282Z',
+      level: 'info',
+      meta: {
+        method: 'GET',
+        url: '/sitemap.xml'
+      },
+      message: {
+        foo: 'bar'
+      }
+    }
+    const expected = {
+      '@timestamp': '2019-09-30T05:09:08.282Z',
+      severity: 'info',
+      fields: {
+        method: 'GET',
+        url: '/sitemap.xml',
+        foo: 'bar'
+      }
+    }
+    expect(defaultTransformer(input)).toEqual(expected)
+  })
+})
+
+describe('rootTransformer', () => {
+  it('message - string', () => {
+    const input: LogData = {
+      timestamp: '2019-09-30T05:09:08.282Z',
+      message: 'Some message',
+      level: 'info',
+      meta: {
+        method: 'GET',
+        url: '/sitemap.xml'
+      }
+    }
+    const expected = {
+      '@timestamp': '2019-09-30T05:09:08.282Z',
+      message: 'Some message',
+      severity: 'info',
+      method: 'GET',
+      url: '/sitemap.xml'
+    }
+    expect(rootTransformer(input)).toEqual(expected)
+  })
+
+  it('message - object', () => {
+    const input: LogData = {
+      timestamp: '2019-09-30T05:09:08.282Z',
+      level: 'info',
+      meta: {
+        method: 'GET',
+        url: '/sitemap.xml'
+      },
+      message: {
+        foo: 'bar'
+      }
+    }
+    const expected = {
+      '@timestamp': '2019-09-30T05:09:08.282Z',
+      severity: 'info',
+      method: 'GET',
+      url: '/sitemap.xml',
+      foo: 'bar'
+    }
+    expect(rootTransformer(input)).toEqual(expected)
   })
 })
